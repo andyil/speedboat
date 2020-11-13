@@ -1,12 +1,8 @@
-import boto3
-from threading import local
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 
+import logging
 
-def slow(x):
-    import time
-    time.sleep(5)
-    return f'x{x+1}'
+logger = logging.getLogger('speedboat.lazythreadpool')
 
 class LazyThreadPool:
 
@@ -14,11 +10,10 @@ class LazyThreadPool:
         self.max_workers = 50
         self.max_pending = 200
 
-    def do_all(self, f, iterator):
+    def submit(self, f, iterator):
         with ThreadPoolExecutor(max_workers=self.max_workers) as tp:
             futures = set()
             for x in iterator:
-                print(f'Putting {x}')
                 future = tp.submit(f, x)
                 futures.add(future)
 
