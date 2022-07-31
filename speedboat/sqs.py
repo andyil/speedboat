@@ -15,7 +15,7 @@ class MessageSender:
 
     def send_10(self, batch):
         if not hasattr(self.local, 'client'):
-            self.local.client = boto3.client('sqs')
+            self.local.client = boto3.Session().client('sqs')
 
         sqs = self.local.client
         entries = [{'Id': str(i), 'MessageBody': elem} for i, elem in enumerate(batch)]
@@ -41,7 +41,3 @@ def send_messages(queue_url, messages):
     ms = MessageSender(queue_url)
     for x in ms.send_all(messages):
         pass
-
-
-if __name__ == '__main__':
-    send_messages_and_forget('https://sqs.eu-central-1.amazonaws.com/175267656368/x1', [str(x) for x in range(100)])
